@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Georgetown Public Hospital Appointment System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-hospital-alt"></i>
+                <h1>Medical Hospital</h1>
+            </div>
+            <div class="user-info">
+                <i class="fas fa-user-circle"></i>
+                <span>Hospital Staff</span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Cards -->
+            <div class="dashboard-cards">
+                <div class="card">
+                    <div class="card-icon" style="background-color: #e3f2fd;">
+                        <i class="fas fa-users" style="color: #1976d2;"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3 id="totalPatients">0</h3>
+                        <p>Total Patients</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon" style="background-color: #f3e5f5;">
+                        <i class="fas fa-calendar-check" style="color: #7b1fa2;"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3 id="totalAppointments">0</h3>
+                        <p>Today's Appointments</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon" style="background-color: #e8f5e9;">
+                        <i class="fas fa-user-md" style="color: #388e3c;"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3 id="totalProviders">0</h3>
+                        <p>Available Providers</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon" style="background-color: #fff3e0;">
+                        <i class="fas fa-clock" style="color: #f57c00;"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3 id="pendingAppointments">0</h3>
+                        <p>Pending</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Two Column Layout -->
+            <div class="two-column">
+                <!-- Left Column: Forms and Actions -->
+                <div class="left-column">
+                    <!-- Appointment Form -->
+                    <section class="section">
+                        <h2><i class="fas fa-calendar-plus"></i> Schedule New Appointment</h2>
+                        <form id="appointmentForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="patientSelect"><i class="fas fa-user"></i> Patient</label>
+                                    <select id="patientSelect" required>
+                                        <option value="">Select a patient...</option>
+                                        <!-- Will be populated by JavaScript -->
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="providerSelect"><i class="fas fa-user-md"></i> Provider</label>
+                                    <select id="providerSelect" required>
+                                        <option value="">Select a provider...</option>
+                                        <!-- Will be populated by JavaScript -->
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="appointmentDate"><i class="fas fa-calendar-day"></i> Date</label>
+                                    <input type="date" id="appointmentDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="appointmentTime"><i class="fas fa-clock"></i> Time</label>
+                                    <input type="time" id="appointmentTime" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="reason"><i class="fas fa-stethoscope"></i> Reason for Visit</label>
+                                <textarea id="reason" rows="3" placeholder="Enter reason for appointment..." required></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="clinicSelect"><i class="fas fa-clinic-medical"></i> Clinic</label>
+                                <select id="clinicSelect" required>
+                                    <option value="">Select a clinic...</option>
+                                    <!-- Will be populated by JavaScript -->
+                                </select>
+                            </div>
+                            
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-calendar-check"></i> Schedule Appointment
+                            </button>
+                        </form>
+                    </section>
+
+                    <!-- Quick Actions -->
+                    <section class="section">
+                        <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+                        <div class="quick-actions">
+                            <button class="action-btn" onclick="searchPatients()">
+                                <i class="fas fa-search"></i> Find Patient
+                            </button>
+                            <button class="action-btn" onclick="viewTodaySchedule()">
+                                <i class="fas fa-list-alt"></i> Today's Schedule
+                            </button>
+                            <button class="action-btn" onclick="addNewPatient()">
+                                <i class="fas fa-user-plus"></i> New Patient
+                            </button>
+                            <button class="action-btn" onclick="generateReport()">
+                                <i class="fas fa-chart-bar"></i> Generate Report
+                            </button>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Right Column: Data Tables -->
+                <div class="right-column">
+                    <!-- Appointments Table -->
+                    <section class="section">
+                        <div class="section-header">
+                            <h2><i class="fas fa-calendar-alt"></i> Recent Appointments</h2>
+                            <div class="filter-options">
+                                <select id="statusFilter" onchange="filterAppointments()">
+                                    <option value="all">All Status</option>
+                                    <option value="scheduled">Scheduled</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="cancelled">Cancelled</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <table id="appointmentsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Date & Time</th>
+                                        <th>Patient</th>
+                                        <th>Provider</th>
+                                        <th>Clinic</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="appointmentsBody">
+                                    <!-- Data will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="table-footer">
+                            <button onclick="loadMoreAppointments()" class="btn-secondary">
+                                <i class="fas fa-redo"></i> Load More
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- Patients Table -->
+                    <section class="section">
+                        <h2><i class="fas fa-users"></i> Patients</h2>
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="patientSearch" placeholder="Search patients..." onkeyup="searchPatientTable()">
+                        </div>
+                        <div class="table-container">
+                            <table id="patientsTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Date of Birth</th>
+                                        <th>Phone</th>
+                                        <th>Email</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="patientsBody">
+                                    <!-- Data will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>© 2024 Georgetown Public Hospital Appointment System | Version 1.0</p>
+        </footer>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="script.js"></script>
+    <!-- Optional: Include mock data for testing without backend -->
+    <!-- <script src="data/mock-api.js"></script> -->
+</body>
+</html>
