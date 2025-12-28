@@ -1,12 +1,6 @@
-// ==============================================
-// CONFIGURATION - SET YOUR API ENDPOINTS HERE
-// ==============================================
-
 const API_CONFIG = {
-    // Base URL for your API - CHANGE THIS to your actual backend URL
-    BASE_URL: 'http://localhost:5000/api', // or 'https://your-hospital-api.com/api'
+    BASE_URL: 'http://localhost:5000/api', 
     
-    // Individual endpoint paths
     ENDPOINTS: {
         PATIENTS: '/patients',
         PROVIDERS: '/providers',
@@ -14,28 +8,19 @@ const API_CONFIG = {
         CLINICS: '/clinics'
     },
     
-    // For demo mode (uses mock data when true)
     USE_MOCK_DATA: true
 };
 
-// Global Data Storage (EMPTY - no sample data)
 let appointments = [];
 let patients = [];
 let providers = [];
 let clinics = [];
 
-// DOM Elements
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize the application
     initApp();
     
-    // Form submission handler
     document.getElementById('appointmentForm').addEventListener('submit', handleAppointmentSubmit);
 });
-
-// ==============================================
-// API SERVICE - PLACEHOLDER ENDPOINTS
-// ==============================================
 
 class ApiService {
     // Generic fetch method - THIS IS WHERE YOU CONNECT TO REAL BACKEND
@@ -44,29 +29,6 @@ class ApiService {
         
         console.log(`📡 [API CALL] ${method} ${url}`, data);
         
-        // ⚠️⚠️⚠️ UNCOMMENT THIS BLOCK WHEN YOUR BACKEND IS READY ⚠️⚠️⚠️
-        /*
-        try {
-            const response = await fetch(url, {
-                method: method,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: data ? JSON.stringify(data) : null
-            });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-            
-            return await response.json();
-        } catch (error) {
-            console.error('❌ API Error:', error);
-            throw error;
-        }
-        */
-        
-        // ⚠️⚠️⚠️ MOCK DATA - DELETE THIS WHEN USING REAL API ⚠️⚠️⚠️
         if (API_CONFIG.USE_MOCK_DATA) {
             console.log('📱 Using mock data (no real API connected)');
             await new Promise(resolve => setTimeout(resolve, 300)); // Simulate network delay
@@ -78,7 +40,6 @@ class ApiService {
         throw new Error('API not configured. Set USE_MOCK_DATA to true or implement real API calls.');
     }
     
-    // Get mock response
     static getMockResponse(endpoint, method, data) {
         // Return appropriate mock data based on endpoint
         switch(endpoint) {
@@ -115,11 +76,7 @@ class ApiService {
         
         return { success: false, message: 'Mock endpoint not implemented' };
     }
-    
-    // ==============================================
-    // SPECIFIC API METHODS
-    // ==============================================
-    
+       
     static async getPatients() {
         return this.fetchAPI(API_CONFIG.ENDPOINTS.PATIENTS, 'GET');
     }
@@ -145,13 +102,8 @@ class ApiService {
     }
 }
 
-// ==============================================
-// APPLICATION CODE
-// ==============================================
-
 // Initialize Application
 async function initApp() {
-    // Load data from API (or use mock data if configured)
     await loadDataFromAPI();
     
     // Populate dropdowns
@@ -169,12 +121,6 @@ async function loadDataFromAPI() {
         // Try to load from API first
         if (!API_CONFIG.USE_MOCK_DATA) {
             console.log('🔄 Loading data from API...');
-            
-            // These would be real API calls (UNCOMMENT WHEN READY)
-            // patients = await ApiService.getPatients();
-            // providers = await ApiService.getProviders();
-            // clinics = await ApiService.getClinics();
-            // appointments = await ApiService.getAppointments();
             
         } else {
             console.log('📱 Using empty mock data');
@@ -545,4 +491,5 @@ async function loadMoreAppointments() {
     } catch (error) {
         console.error('Error loading more appointments:', error);
     }
+
 }
